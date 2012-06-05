@@ -1,0 +1,17 @@
+select concat("{"
+, "\"persoonid\": \"", persoonid, "\", "
+, "\"roepnaam\": \"", roepnaam, "\", "
+, "\"tussenvoegsel\": \"", tussenvoegsel, "\", "
+, "\"achternaam\": \"", achternaam, "\", "
+, "\"straat\": \"", straat, "\", "
+, "\"postcode\": \"", postcode, "\", "
+, "\"plaats\": \"", plaats, "\", "
+, "\"geboortedatum\": \"", geboortedatum, "\", "
+, "\"telefoon\": \"", telefoon, "\", "
+, "\"mobiel\": \"", mobiel, "\", "
+, "\"emailadres\": \"", emailadres, "\", "
+, "\"hh_telefoon\": \"", huis_telefoon, "\", "
+, "\"hh_mobiel\": \"", huis_mobiel, "\", "
+, "\"lastModified\": \"", lastModified, "\""
+, "},") as actieve_personen
+from actieve_personen

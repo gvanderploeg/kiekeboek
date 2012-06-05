@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for this package -->
+    <string
+        name="label">Kiekeboek Fonteinkerk</string>
+
+    <!-- Permission label -->
+    <string
+        name="permlab_samplesyncadapterAuthPassword">access to passwords for Kiekeboek-accounts</string>
+    <!-- Permission description -->
+    <string
+        name="permdesc_samplesyncadapterAuthPassword">Allows applications direct access to the passwords for the
+ Kiekeboek-account(s) you have configured.</string>
+
+    <!-- Permission label -->
+    <string
+        name="permlab_samplesyncadapterAuth">view configured accounts</string>
+    <!-- Permission description -->
+    <string
+        name="permdesc_samplesyncadapterAuth">Allows applications to see the usernames (email addresses) of
+        the Kiekeboek-account(s) you have configured.</string>
+    <string
+        name="notification_login_error">Touch to sign into your Kiekeboek-account.</string>
+	
+    <!-- Title string for Login activity-->
+    <string
+        name="ui_login_activity_title">Inloggen</string>
+    <!-- Message shown in progress dialog while app connects to the server -->
+    <string
+        name="ui_login_activity_authenticating">Inloggen\u2026</string>
+
+    <!-- AuthenticatorActivity -->
+    <skip />
+    <!-- Label above username EditText -->
+    <string
+        name="login_activity_username_label">Gebruikersnaam</string>
+    <!-- Label above password EditText -->
+    <string
+        name="login_activity_password_label">Wachtwoord</string>
+    <!-- Button to sign in after entering username and password -->
+    <string
+        name="login_activity_ok_button">Inloggen</string>
+
+    <!-- Message shown in dialog if the username or password is invalid. -->
+    <string
+        name="login_activity_loginfail_text_both">Gebruikersnaam of wachtwoord onjuist. 
+        U heeft een geldige account op het Fonteinkerk-intranet nodig om het kiekeboek te kunnen gebruiken.</string>
+    <!-- Message shown in dialog if the password is invalid -->
+    <string
+        name="login_activity_loginfail_text_pwonly">You entered the wrong password or your account has changed.
+        Please re-enter your password.</string>
+    <!-- Message shown in dialog to prompt the user for their password -->
+    <string
+        name="login_activity_loginfail_text_pwmissing">Type the password for this account.</string>
+    <!--
+        Message shown if the provided account doesn't support the current
+        activity.
+    -->
+    <string
+        name="login_activity_newaccount_text">Inloggen op Fonteinkerk-intranet</string>
+
+    <string name="authentication_url">http://www.fonteinkerkhaarlem.nl/intranet/login/logged_in.php</string>
+
+    <!--<string name="intranet_export_url">http://192.168.178.37/kiekeboek/kiekeboek-export.php</string>-->
+    <string name="intranet_export_url">http://www.fonteinkerkhaarlem.nl/intranet/leden/export_kiekeboek.php</string>
+
+    <!-- Button that takes the user to the "sign in" screen -->
+    <string
+        name="sign_in_button_label">Inloggen</string>
+    <!-- Button for going to the previous screen or step -->
+    <string
+        name="back_button_label">Terug</string>
+    <!-- Button to cancel the current operation -->
+    <string
+        name="cancel_button_label">Annuleren</string>
+    <string
+        name="profile_action">Kiekeboek Fonteinkerk</string>
+    <string name="view_profile">Bekijk kiekeboek</string>
+    
+    <string name="menu_alle_personen">Alle personen</string>
+    <string name="personProfileText">Nam posuere odio vitae turpis dictum faucibus. Suspendisse hendrerit mollis nunc nec euismod. Maecenas nunc orci, sodales eu elementum nec, vulputate nec metus. Praesent elementum tristique purus, non convallis risus tempor nec. Cras sed felis non diam eleifend eleifend. Pellentesque quis turpis in ante commodo hendrerit. Ut hendrerit leo eget magna venenatis accumsan. Nulla metus eros, ullamcorper id ornare eget, fringilla eu tellus. Sed volutpat eleifend ornare. Curabitur cursus, ipsum quis volutpat lobortis, lorem justo sodales felis, id viverra mi lectus non metus. Pellentesque tellus nulla, interdum id sollicitudin quis, lobortis ut enim. Mauris vitae enim tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Pellentesque vitae magna purus, vehicula ullamcorper augue. Etiam egestas tristique purus, a sodales nisi mattis ut. </string>
+    <string name="list_empty">Het kiekeboek is leeg. Configureer eerst een account. (Instellingen -> Accounts
+      en Synchronisatie -> Voeg account toe -> Kies type \'Kiekeboek Fonteinkerk\' en log in met eigen
+      gebruikersnaam en wachtwoord.</string>
+    <string name="menu_about">Over</string>
+    <string name="menu_search">Zoeken</string>
+    <string name="menu_sync_instellingen">Sync-instellingen</string>
+    <string name="abouttext">Deze app is gemaakt door Geert van der Ploeg.
+        \n
+        Geen garanties, geen support :-)
+        \n
+        Wel een verplichting: wees zorgvuldig met de persoonsgegevens die in je telefoon staan.
+    </string>
+  <string name="notificationtext"></string>
+  <string name="notificationtitle_intranetuserconnector">Probleem bij ophalen intranetgegevens</string>
+</resources>
