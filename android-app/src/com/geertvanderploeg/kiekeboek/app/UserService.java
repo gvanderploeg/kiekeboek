@@ -8,4 +8,6 @@ import android.content.Context;
 
 public interface UserService {
   List<User> getUsers(Context context);
+
+  User getUser(int userId, Context context);
 }

@@ -20,17 +20,6 @@ import android.util.Log;
 public class AddressBookUserService implements UserService {
     private final static String TAG = "KiekeboekUserService";
 
-    private final static String[] projection = new String[]{
-            RawContacts._ID,
-//            CommonDataKinds.StructuredName.GIVEN_NAME,
-//            CommonDataKinds.StructuredName.MIDDLE_NAME,
-//            CommonDataKinds.StructuredName.FAMILY_NAME
-//            CommonDataKinds.StructuredName.DISPLAY_NAME
-            "display_name",
-            RawContacts.CONTACT_ID
-    };
-
-
   @Override
     public List<User> getUsers(Context context) {
         ContentResolver cr = context.getContentResolver();
@@ -38,11 +27,6 @@ public class AddressBookUserService implements UserService {
                 .appendQueryParameter(RawContacts.ACCOUNT_NAME, "geertvanderploeg") // FIXME: inject from outside
                 .appendQueryParameter(RawContacts.ACCOUNT_TYPE, Constants.ACCOUNT_TYPE)
                 .build();
-//
-//        Uri contactsUri = RawContacts.CONTENT_URI.buildUpon()
-//                .appendQueryParameter(RawContacts.ACCOUNT_NAME, "geertvanderploeg") // FIXME: inject from outside
-//                .appendQueryParameter(RawContacts.ACCOUNT_TYPE, Constants.ACCOUNT_TYPE)
-//                .build();
 
         Log.d(TAG, "Querying URI: " + contactsUri);
         
@@ -123,18 +107,6 @@ public class AddressBookUserService implements UserService {
                                 break;
                         }
                     }
-/*
-                    // debug only for first 10 contacts
-                    if (rawContactId < 10) {
-                        Log.d(TAG, "mime type: " + mimeType);
-                        Log.d(TAG, "display name: " + cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)));
-                        Log.d(TAG, "data_id: " + cursor.getString(cursor.getColumnIndex(ContactsContract.Data._ID)));
-                        Log.d(TAG, "data1: " + cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1)));
-                        Log.d(TAG, "data2: " + cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA2)));
-                        Log.d(TAG, "data3: " + cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA3)));
-                        Log.d(TAG, "data4: " + cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA4)));
-                    }
-*/
                     rawContactIdPreviousRow = rawContactId;
                 } while (cursor.moveToNext());
             }
@@ -145,63 +117,9 @@ public class AddressBookUserService implements UserService {
         return users;
     }
 
-
-/*
-    private static User getUserByRawContactId(ContentResolver cr, int i) {
-        Uri rawContactUri = ContentUris.withAppendedId(RawContacts.CONTENT_URI, i);
-        Uri entityUri = Uri.withAppendedPath(rawContactUri, RawContacts.Entity.CONTENT_DIRECTORY);
-
-        Log.d(TAG, "entity uri: " + entityUri);
-        Cursor c = cr.query(entityUri, null, null, null, null);
-
-        int userId = 0;
-        String homePhone = "";
-        String mobilePhone = "";
-        String officePhone = "";
-        String firstName = "";
-        String middleName = "";
-        String lastName = "";
-        String email = "";
-        String contactProfileEntityId = "0";
-        byte[] photoData = new byte[0];
-        try {
-            while (c.moveToNext()) {
-                if (!c.isNull(1)) {
-                    String mimeType = c.getString(c.getColumnIndex(RawContacts.Entity.MIMETYPE));
-
-                    if (mimeType.equals(CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
-                        switch (c.getInt(c.getColumnIndex(CommonDataKinds.Phone.TYPE))) {
-                            case CommonDataKinds.Phone.TYPE_HOME:
-                                homePhone = c.getString(c.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-                                break;
-                            case CommonDataKinds.Phone.TYPE_MOBILE:
-                                mobilePhone = c.getString(c.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-                                break;
-                            default:
-                                officePhone = c.getString(c.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-                                break;
-                        }
-                    } else if (mimeType.equals(CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)) {
-                        firstName = c.getString(c.getColumnIndex(CommonDataKinds.StructuredName.GIVEN_NAME));
-                        middleName = c.getString(c.getColumnIndex(CommonDataKinds.StructuredName.MIDDLE_NAME));
-                        lastName = c.getString(c.getColumnIndex(CommonDataKinds.StructuredName.FAMILY_NAME));
-                    } else if (mimeType.equals(CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
-                        email = c.getString(c.getColumnIndex(CommonDataKinds.Email.DATA1));
-                    } else if (mimeType.equals(Constants.KIEKEBOEK_MIMETYPE)) {
-                        contactProfileEntityId = c.getString(c.getColumnIndex(RawContacts.Entity._ID));
-                        userId = c.getInt(c.getColumnIndex(KiekeboekColumns.DATA_PID));
-                    } else if (mimeType.equals(CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
-                        photoData = c.getBlob(c.getColumnIndex(CommonDataKinds.Photo.PHOTO));
-                    }
-                }
-            }
-        } finally {
-            c.close();
-        }
-        User user = new User("", firstName, middleName, lastName, null, null, null, mobilePhone, officePhone, homePhone, email, false, userId);
-        user.setPhotoData(photoData);
-        user.setUri(ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, Long.valueOf(contactProfileEntityId)));
-        return user;
-    }
-    */
+  @Override
+  public User getUser(int userId, Context context) {
+    // TODO: implement at all? (as LocalStore is preferred now)
+    return null;
+  }
 }
