@@ -14,6 +14,7 @@ import com.geertvanderploeg.kiekeboek.client.NetworkUtilities;
 import com.geertvanderploeg.kiekeboek.client.User;
 import com.geertvanderploeg.kiekeboek.syncadapter.images.ImageConnector;
 import com.geertvanderploeg.kiekeboek.syncadapter.images.PrefilledImageConnector;
+import com.geertvanderploeg.kiekeboek.syncadapter.intranet.IntranetSyncStatus;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -71,6 +72,16 @@ public class IntranetUserConnector implements UserConnector {
     return l;
   }
 
+  @Override
+  public Date getLastSyncDate(Context context) {
+    return IntranetSyncStatus.getLastSyncDate(context);
+  }
+
+  @Override
+  public void saveLastSyncDate(Context context, Date date) {
+    IntranetSyncStatus.saveLastSyncDate(context, date);
+  }
+
   private String getJSONStringFromIntranet(Account account, String authtoken, Context context, Date lastUpdated) {
 
     final Thread thread = NetworkUtilities.attemptAuth(account.name, authtoken, null, context);
@@ -91,7 +102,7 @@ public class IntranetUserConnector implements UserConnector {
 
     String uri = context.getString(R.string.intranet_export_url);
 
-    if (lastUpdated != null) {
+    if (lastUpdated != null && lastUpdated.getTime() > 0) {
       long since = lastUpdated.getTime() / 1000;
       uri = uri + "?since=" + since;
     }
