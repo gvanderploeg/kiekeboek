@@ -54,7 +54,26 @@ public class JSONResourceUserConnector implements UserConnector {
         return l;
     }
 
-    protected final String getStringFromRawResource(Context context, int resourceId) {
+  /**
+   * This implementation simply ignores the last update time
+   * @param context
+   * @return
+   */
+  @Override
+  public Date getLastSyncDate(Context context) {
+    return new Date(0);
+  }
+
+  /**
+   * See javadoc of {@link #getLastSyncDate(Context)}
+   * @param context
+   * @param date
+   */
+  @Override
+  public void saveLastSyncDate(Context context, Date date) {
+  }
+
+  protected final String getStringFromRawResource(Context context, int resourceId) {
         InputStream is = context.getResources().openRawResource(resourceId);
         Writer writer = new StringWriter();
         char[] buffer = new char[1024];

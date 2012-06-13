@@ -2,11 +2,15 @@ package com.geertvanderploeg.kiekeboek.app;
 
 import com.geertvanderploeg.kiekeboek.R;
 import com.geertvanderploeg.kiekeboek.client.User;
+import com.geertvanderploeg.kiekeboek.platform.KiekeboekColumns;
 
 import android.app.Activity;
+import android.content.ContentProviderClient;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +30,19 @@ public class KiekeboekDetailView extends Activity {
     Log.v(TAG, "oncreate");
     setContentView(R.layout.kiekeboek_detail);
 
-    int userId = Integer.parseInt(getIntent().getAction());
+    final Uri contactUri = getIntent().getData();
+    // FIXME: this does not work anymore when coming from list view. Apparently we have to differentiate between the
+    // two?
+    final ContentProviderClient contentProviderClient = getContentResolver().acquireContentProviderClient(contactUri);
+    int userId = 0;
+    try {
+      final Cursor cursor = contentProviderClient.query(contactUri, new String[]{KiekeboekColumns.DATA_PID}, null, null, null);
+      if (cursor.moveToFirst()) {
+        userId = cursor.getInt(0);
+      }
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
     Log.v(TAG, "Starting activity for userId " + userId);
 
     User u = userService.getUser(userId, this);

@@ -43,59 +43,54 @@ import android.util.Log;
  * platform ContactOperations provider.
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
-    private static final String TAG = "SyncAdapter";
+  private static final String TAG = "SyncAdapter";
 
-    private final AccountManager mAccountManager;
-    private final Context context;
+  private final AccountManager mAccountManager;
+  private final Context context;
 
-    private Date mLastUpdated;
-
-    private UserConnector connector = new IntranetUserConnector();
+  private UserConnector connector = new IntranetUserConnector();
 //    private UserConnector connector = new JSONResourceUserConnector();
 
-    public SyncAdapter(Context context, boolean autoInitialize) {
-        super(context, autoInitialize);
-        this.context = context;
-        mAccountManager = AccountManager.get(context);
+  public SyncAdapter(Context context, boolean autoInitialize) {
+    super(context, autoInitialize);
+    this.context = context;
+    mAccountManager = AccountManager.get(context);
+  }
+
+  @Override
+  public void onPerformSync(Account account, Bundle extras, String authority,
+                            ContentProviderClient provider, SyncResult syncResult) {
+    List<User> users;
+    String authtoken = null;
+    try {
+      // use the account manager to request the credentials
+      try {
+        authtoken = mAccountManager.blockingGetAuthToken(account,
+            Constants.AUTHTOKEN_TYPE, true /* notifyAuthFailure */);
+      } catch (OperationCanceledException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (AuthenticatorException e) {
+        e.printStackTrace();
+      }
+
+      Date lastUpdated = connector.getLastSyncDate(context);
+      Log.d(TAG, "Syncing kiekeboek contacts, with last update being: " + lastUpdated);
+      // fetch updates
+      users = connector.fetchUpdates(context, account, authtoken, lastUpdated);
+      // Update local store
+      LocalContactsStore.syncContacts(context, users);
+      // update platform contacts.
+      Log.d(TAG, "Calling contactManager's sync contacts");
+      ContactManager.syncContacts(context, account.name, users);
+
+      connector.saveLastSyncDate(context, new Date());
+
+    } catch (final ParseException e) {
+      syncResult.stats.numParseExceptions++;
+      Log.e(TAG, "ParseException", e);
+      Notifications.addNotification(context, "ParseException", e.getMessage());
     }
-
-    @Override
-    public void onPerformSync(Account account, Bundle extras, String authority,
-                              ContentProviderClient provider, SyncResult syncResult) {
-        List<User> users;
-        String authtoken = null;
-        try {
-            // use the account manager to request the credentials
-            try {
-                authtoken = mAccountManager.blockingGetAuthToken(account,
-                        Constants.AUTHTOKEN_TYPE, true /* notifyAuthFailure */);
-            } catch (OperationCanceledException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (AuthenticatorException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-
-            // fetch updates
-            users = connector.fetchUpdates(context, account, authtoken, mLastUpdated);
-
-
-            // update the last synced date.
-            mLastUpdated = new Date();
-
-            // Update local store
-            LocalContactsStore.syncContacts(context, users);
-
-            // update platform contacts.
-            Log.d(TAG, "Calling contactManager's sync contacts");
-            ContactManager.syncContacts(context, account.name, users);
-
-
-        } catch (final ParseException e) {
-          syncResult.stats.numParseExceptions++;
-          Log.e(TAG, "ParseException", e);
-          Notifications.addNotification(context, "ParseException", e.getMessage());
-        }
-    }
+  }
 }
