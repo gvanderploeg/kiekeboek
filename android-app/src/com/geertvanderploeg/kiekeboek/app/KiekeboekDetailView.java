@@ -31,18 +31,15 @@ public class KiekeboekDetailView extends Activity {
     setContentView(R.layout.kiekeboek_detail);
 
     final Uri contactUri = getIntent().getData();
-    // FIXME: this does not work anymore when coming from list view. Apparently we have to differentiate between the
-    // two?
-    final ContentProviderClient contentProviderClient = getContentResolver().acquireContentProviderClient(contactUri);
+    Log.v(TAG, "uri is: " + contactUri);
+
     int userId = 0;
-    try {
-      final Cursor cursor = contentProviderClient.query(contactUri, new String[]{KiekeboekColumns.DATA_PID}, null, null, null);
-      if (cursor.moveToFirst()) {
-        userId = cursor.getInt(0);
-      }
-    } catch (RemoteException e) {
-      e.printStackTrace();
+    if (contactUri == null) { // coming from list view
+      userId = Integer.parseInt(getIntent().getAction());
+    } else { // coming from address book's contact details
+      userId = getUserIdFromContact(contactUri);
     }
+
     Log.v(TAG, "Starting activity for userId " + userId);
 
     User u = userService.getUser(userId, this);
@@ -66,6 +63,20 @@ public class KiekeboekDetailView extends Activity {
         startActivity(myIntent);
       }
     });
+  }
+
+  private int getUserIdFromContact(Uri contactUri) {
+    final ContentProviderClient contentProviderClient = getContentResolver().acquireContentProviderClient(contactUri);
+    int userId = 0;
+    try {
+      final Cursor cursor = contentProviderClient.query(contactUri, new String[]{KiekeboekColumns.DATA_PID}, null, null, null);
+      if (cursor.moveToFirst()) {
+        return cursor.getInt(0);
+      }
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+    return 0;
   }
 
   @Override
