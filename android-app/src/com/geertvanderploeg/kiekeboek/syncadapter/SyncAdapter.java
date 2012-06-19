@@ -16,7 +16,6 @@
 
 package com.geertvanderploeg.kiekeboek.syncadapter;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,8 +28,6 @@ import org.apache.http.ParseException;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -67,11 +64,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
       try {
         authtoken = mAccountManager.blockingGetAuthToken(account,
             Constants.AUTHTOKEN_TYPE, true /* notifyAuthFailure */);
-      } catch (OperationCanceledException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (AuthenticatorException e) {
+      } catch (Exception e) {
         e.printStackTrace();
       }
 
