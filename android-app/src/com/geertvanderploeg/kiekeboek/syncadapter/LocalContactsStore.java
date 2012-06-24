@@ -2,6 +2,7 @@ package com.geertvanderploeg.kiekeboek.syncadapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.geertvanderploeg.kiekeboek.app.Notifications;
@@ -67,6 +68,9 @@ public class LocalContactsStore {
       int ciStreet = cursor.getColumnIndex(KiekeboekColumns.STREET);
       int ciPostcode = cursor.getColumnIndex(KiekeboekColumns.POSTCODE);
       int ciCity = cursor.getColumnIndex(KiekeboekColumns.CITY);
+      int ciArea = cursor.getColumnIndex(KiekeboekColumns.AREA);
+      int ciHousegroup = cursor.getColumnIndex(KiekeboekColumns.HOUSEGROUP);
+      int ciBirthdate = cursor.getColumnIndex(KiekeboekColumns.BIRTHDATE);
 
       Log.d(TAG, "column names: " + Arrays.asList(cursor.getColumnNames()).toString());
       Log.d(TAG, "Nr of rows queried: " + cursor.getCount());
@@ -85,9 +89,11 @@ public class LocalContactsStore {
         String street = cursor.getString(ciStreet);
         String postcode = cursor.getString(ciPostcode);
         String city = cursor.getString(ciCity);
-
+        String area = cursor.getString(ciArea);
+        String housegroup = cursor.getString(ciHousegroup);
+        Date birthdate = new Date(cursor.getLong(ciBirthdate));
         User u = new User(username, firstname, middlename, lastname, street, postcode, city, cellphone,
-            officephone, homephone, email, false, userid);
+            officephone, homephone, email, birthdate, area, housegroup, false, userid);
         u.setPhotoData(photodata);
 
         u.setUri(Uri.withAppendedPath(KiekeboekColumns.CONTENT_URI, "/contacts/" + _id));
@@ -190,6 +196,9 @@ public class LocalContactsStore {
     values.put(KiekeboekColumns.POSTCODE, user.getPostcode());
     values.put(KiekeboekColumns.OFFICEPHONE, user.getOfficePhone());
     values.put(KiekeboekColumns.PHOTODATA, user.getPhotoData());
+    values.put(KiekeboekColumns.AREA, user.getArea());
+    values.put(KiekeboekColumns.HOUSEGROUP, user.getHousegroup());
+    values.put(KiekeboekColumns.BIRTHDATE, user.getBirthdate().getTime());
     return values;
   }
 

@@ -65,7 +65,7 @@ public class KiekeboekListView extends ListActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.sync_settings:
-                startActivityForResult(new Intent(Settings.ACTION_SYNC_SETTINGS), 0);
+              startActivityForResult(new Intent(Settings.ACTION_SYNC_SETTINGS), 0);
                 return true;
             case R.id.about:
                 startActivity(new Intent(this, KiekeboekAboutView.class));

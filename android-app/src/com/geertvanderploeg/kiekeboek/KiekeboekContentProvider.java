@@ -23,7 +23,7 @@ public class KiekeboekContentProvider extends ContentProvider {
     private static final String TAG = "KiekeboekContentProvider";
 
     private static final String DATABASE_NAME = "kiekeboek.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String CONTACTS_TABLE_NAME = "contacts";
 
 //    private static HashMap<String, String> sNotesProjectionMap;
@@ -41,7 +41,8 @@ public class KiekeboekContentProvider extends ContentProvider {
      * table
      */
     public static final class KiekeboekColumns implements BaseColumns {
-        // This class cannot be instantiated
+
+      // This class cannot be instantiated
         private KiekeboekColumns() {}
 
         /**
@@ -78,8 +79,11 @@ public class KiekeboekContentProvider extends ContentProvider {
       public static final String STREET = "street";
       public static final String POSTCODE = "postcode";
       public static final String CITY = "city";
+      public static final String BIRTHDATE = "birthdate";
+      public static final String AREA = "area";
+      public static final String HOUSEGROUP = "housegroup";
 
-        /**
+      /**
          * The timestamp for when the row was created
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */
@@ -119,11 +123,13 @@ public class KiekeboekContentProvider extends ContentProvider {
                     + KiekeboekColumns.CITY + " TEXT,"
                     + KiekeboekColumns.EMAIL + " TEXT,"
                     + KiekeboekColumns.POSTCODE + " TEXT,"
+                    + KiekeboekColumns.BIRTHDATE + " LONG,"
+                    + KiekeboekColumns.AREA + " TEXT,"
+                    + KiekeboekColumns.HOUSEGROUP + " TEXT,"
                     + KiekeboekColumns.PHOTODATA + " BLOB,"
                     + KiekeboekColumns.CREATED_DATE + " INTEGER,"
                     + KiekeboekColumns.MODIFIED_DATE + " INTEGER"
                     + ");");
-          // TODO: add other fields
         }
 
         @Override

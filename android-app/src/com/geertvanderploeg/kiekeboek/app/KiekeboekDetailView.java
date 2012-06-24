@@ -1,5 +1,7 @@
 package com.geertvanderploeg.kiekeboek.app;
 
+import java.text.DateFormat;
+
 import com.geertvanderploeg.kiekeboek.R;
 import com.geertvanderploeg.kiekeboek.client.User;
 import com.geertvanderploeg.kiekeboek.platform.KiekeboekColumns;
@@ -8,6 +10,8 @@ import android.app.Activity;
 import android.content.ContentProviderClient;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -16,13 +20,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class KiekeboekDetailView extends Activity {
   private static final String TAG = "KiekeboekDetailView";
 
   private static UserService userService = new LocalStoreUserService();
+
+  private static final DateFormat birthdateFormat = DateFormat.getDateInstance();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +49,7 @@ public class KiekeboekDetailView extends Activity {
 
     User u = userService.getUser(userId, this);
     if (u != null) {
-      ImageView image = (ImageView) findViewById(R.id.personPicture);
-      image.setImageBitmap(u.getPhotoBitmap());
-
-      TextView name = (TextView) findViewById(R.id.personName);
-      name.setText(u.getDisplayName());
-
+      populateDetailView(u);
     } else {
       Log.v(TAG, "no data");
     }
@@ -63,6 +63,28 @@ public class KiekeboekDetailView extends Activity {
         startActivity(myIntent);
       }
     });
+  }
+
+  private void populateDetailView(User u) {
+    TextView name = (TextView) findViewById(R.id.detailNameAndPicture);
+    final Bitmap photoBitmap = u.getPhotoBitmap();
+    final BitmapDrawable photo = new BitmapDrawable(photoBitmap);
+    photo.setBounds(0, 0, photoBitmap.getWidth(), photoBitmap.getHeight());
+    name.setCompoundDrawables(photo, null, null, null);
+    name.setText(u.getDisplayName());
+
+
+    TextView birthdateView = (TextView) findViewById(R.id.detailBirthdate);
+    birthdateView.setText(birthdateFormat.format(u.getBirthdate()));
+
+    TextView addressView = (TextView) findViewById(R.id.detailAddress);
+    addressView.setText(u.getStreet() + "\n" + u.getPostcode() + " " + u
+        .getCity());
+
+
+    TextView areaView = (TextView) findViewById(R.id.detailArea);
+    areaView.setText("Wijk " + u.getArea() + "\nKleine groep " + u.getHousegroup());
+
   }
 
   private int getUserIdFromContact(Uri contactUri) {

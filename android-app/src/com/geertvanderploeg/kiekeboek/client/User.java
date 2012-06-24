@@ -16,6 +16,9 @@
 
 package com.geertvanderploeg.kiekeboek.client;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
@@ -28,6 +31,8 @@ import android.util.Log;
  * Represents a sample SyncAdapter user
  */
 public class User {
+
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   private final String userName;
   private final String firstName;
@@ -44,6 +49,9 @@ public class User {
   private final String postcode;
   private final String city;
   private Uri uri;
+  private Date birthdate;
+  private String housegroup;
+  private String area;
 
   public int getUserId() {
     return userId;
@@ -83,7 +91,7 @@ public class User {
 
   public User(String name, String firstName, String middleName, String lastName,
               String street, String postcode, String city, String cellPhone,
-              String officePhone, String homePhone, String email,
+              String officePhone, String homePhone, String email, Date birthdate, String area, String housegroup,
               boolean deleted, Integer userId) {
     this.userName = name;
     this.firstName = firstName;
@@ -93,6 +101,7 @@ public class User {
     this.street = street;
     this.postcode = postcode;
     this.city = city;
+    this.birthdate = birthdate;
 
     this.email = normalizeEmail(email);
     this.deleted = deleted;
@@ -100,13 +109,14 @@ public class User {
     this.cellPhone = normalizePhone(cellPhone);
     this.officePhone = normalizePhone(officePhone);
     this.homePhone = normalizePhone(homePhone);
+    this.housegroup = housegroup;
+    this.area = area;
   }
 
 
   public static String normalizeEmail(String email) {
-    String ret = email;
     // no rules yet.
-    return ret;
+    return email;
   }
 
   public static String normalizePhone(String p) {
@@ -142,9 +152,17 @@ public class User {
       final String officePhone = null;
       final String homePhone = user.has("telefoon") ? user.getString("telefoon") : null;
       final String email = user.has("emailadres") ? user.getString("emailadres") : null;
+      final String area = user.has("wijk") ? user.getString("wijk") : null;
+      final String housegroup = user.has("kleine_groep") ? user.getString("kleine_groep") : null;
       final boolean deleted = false; // user.has("isDeleted") ? user.getBoolean("isDeleted") : false;
+
+      Date birthdate = null;
+      if (user.has("geboortedatum")) {
+        birthdate = dateFormat.parse(user.getString("geboortedatum"));
+      }
+
       return new User(userName, firstName, middleName, lastName, street, postcode, city, cellPhone,
-          officePhone, homePhone, email, deleted, userId);
+          officePhone, homePhone, email, birthdate, area, housegroup, deleted, userId);
     } catch (final Exception ex) {
       Log.i("User", "Error parsing JSON user object" + ex.toString());
 
@@ -213,5 +231,17 @@ public class User {
 
   public void setUri(Uri uri) {
     this.uri = uri;
+  }
+
+  public Date getBirthdate() {
+    return birthdate;
+  }
+
+  public String getHousegroup() {
+    return housegroup;
+  }
+
+  public String getArea() {
+    return area;
   }
 }
