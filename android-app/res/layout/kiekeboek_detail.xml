@@ -17,32 +17,45 @@
             android:layout_height="wrap_content"
             android:text="@string/menu_alle_personen"
             />
-        <ImageView
-            android:id="@+id/banner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0px"
-            android:src="@drawable/fonteinkerkbanner" />
-
-        <ImageView
-            android:id="@+id/personPicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/fonteinkerkicon" />
 
         <TextView
-            android:id="@+id/personName"
+            android:drawableLeft="@drawable/fonteinkerkicon"
+            android:gravity="center_vertical"
+            android:drawablePadding="10px"
+            android:id="@+id/detailNameAndPicture"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Persoonsnaam"
+            android:text="Voornaam en Achternaam"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/profileText"
+            android:gravity="center_vertical"
+            android:id="@+id/detailBirthdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/personProfileText" />
+            android:text="Geboortedatum: xx-xx-xxxx"
+            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            />
+
+        <TextView
+            android:gravity="center_vertical"
+            android:id="@+id/detailAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adres:\nMijnstraat 12\n2030ab\nHaarlem"
+            android:drawableLeft="@android:drawable/ic_menu_mylocation"
+            />
+
+        <TextView
+            android:id="@+id/detailArea"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kleine groep: 3a\nWijk: 3"
+            android:drawableLeft="@drawable/ic_menu_allfriends"
+            />
+
     </LinearLayout>
 
 </ScrollView>

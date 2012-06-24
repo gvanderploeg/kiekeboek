@@ -96,7 +96,6 @@
     <string name="view_profile">Bekijk kiekeboek</string>
     
     <string name="menu_alle_personen">Alle personen</string>
-    <string name="personProfileText">Nam posuere odio vitae turpis dictum faucibus. Suspendisse hendrerit mollis nunc nec euismod. Maecenas nunc orci, sodales eu elementum nec, vulputate nec metus. Praesent elementum tristique purus, non convallis risus tempor nec. Cras sed felis non diam eleifend eleifend. Pellentesque quis turpis in ante commodo hendrerit. Ut hendrerit leo eget magna venenatis accumsan. Nulla metus eros, ullamcorper id ornare eget, fringilla eu tellus. Sed volutpat eleifend ornare. Curabitur cursus, ipsum quis volutpat lobortis, lorem justo sodales felis, id viverra mi lectus non metus. Pellentesque tellus nulla, interdum id sollicitudin quis, lobortis ut enim. Mauris vitae enim tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Pellentesque vitae magna purus, vehicula ullamcorper augue. Etiam egestas tristique purus, a sodales nisi mattis ut. </string>
     <string name="list_empty">Het kiekeboek is leeg. Configureer eerst een account. (Instellingen -> Accounts
       en Synchronisatie -> Voeg account toe -> Kies type \'Kiekeboek Fonteinkerk\' en log in met eigen
       gebruikersnaam en wachtwoord.</string>
@@ -109,6 +108,6 @@
         \n
         Wel een verplichting: wees zorgvuldig met de persoonsgegevens die in je telefoon staan.
     </string>
-  <string name="notificationtext"></string>
+  <string name="notificationtext"/>
   <string name="notificationtitle_intranetuserconnector">Probleem bij ophalen intranetgegevens</string>
 </resources>
