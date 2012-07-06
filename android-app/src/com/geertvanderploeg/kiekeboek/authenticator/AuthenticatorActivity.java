@@ -16,6 +16,10 @@
 
 package com.geertvanderploeg.kiekeboek.authenticator;
 
+import com.geertvanderploeg.kiekeboek.Constants;
+import com.geertvanderploeg.kiekeboek.R;
+import com.geertvanderploeg.kiekeboek.client.NetworkUtilities;
+
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
@@ -38,10 +42,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.geertvanderploeg.kiekeboek.Constants;
-import com.geertvanderploeg.kiekeboek.R;
-import com.geertvanderploeg.kiekeboek.client.NetworkUtilities;
 
 /**
  * Activity which displays login screen to the user.
@@ -107,9 +107,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         mMessage.setText(getMessage());
     }
 
-    /*
-     * {@inheritDoc}
-     */
+  @Override
+  protected Dialog onCreateDialog(int id, Bundle args) {
+    return super.onCreateDialog(id, args);
+  }
+
+  /*
+  * {@inheritDoc}
+  */
     @Override
     protected Dialog onCreateDialog(int id) {
         final ProgressDialog dialog = new ProgressDialog(this);
