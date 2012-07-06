@@ -340,4 +340,14 @@ public class ContactOperations {
         return this;
     }
 
+  public ContactOperations addGroupMembership(long groupId) {
+    mValues.clear();
+    mValues.put(ContactsContract.CommonDataKinds.GroupMembership.RAW_CONTACT_ID, mRawContactId);
+    mValues.put(ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID,  groupId);
+    mValues.put(ContactsContract.CommonDataKinds.GroupMembership.MIMETYPE,
+        ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE);
+
+    addInsertOp();
+    return this;
+  }
 }

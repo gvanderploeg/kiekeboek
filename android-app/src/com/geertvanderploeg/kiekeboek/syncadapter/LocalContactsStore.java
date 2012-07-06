@@ -127,6 +127,7 @@ public class LocalContactsStore {
     Log.d(TAG, "Store of contacts complete");
   }
 
+
   public static List<Integer> getCurrentUserIds(Context ctx, ContentProviderClient contentProviderClient) {
     List<Integer> userids = new ArrayList<Integer>();
     Cursor cursor = null;

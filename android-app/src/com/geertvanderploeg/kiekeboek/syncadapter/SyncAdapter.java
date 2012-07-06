@@ -69,15 +69,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
       }
 
       Date lastUpdated = connector.getLastSyncDate(context);
+
       Log.d(TAG, "Syncing kiekeboek contacts, with last update being: " + lastUpdated);
       // fetch updates
       users = connector.fetchUpdates(context, account, authtoken, lastUpdated);
       // Update local store
-      LocalContactsStore.syncContacts(context, users);
-      // update platform contacts.
-      Log.d(TAG, "Calling contactManager's sync contacts");
-      ContactManager.syncContacts(context, account.name, users);
-
+      Log.d(TAG, "Number of users to be synced: " + users.size());
+      if (users.size() > 0) {
+        Log.d(TAG, "Calling LocalContactsStore's sync contacts");
+        LocalContactsStore.syncContacts(context, users);
+        // update platform contacts.
+        Log.d(TAG, "Calling contactManager's sync contacts");
+        ContactManager.syncContacts(context, account.name, users);
+      } else {
+        Log.d(TAG, "Not calling syncContacts because no updates.");
+      }
       connector.saveLastSyncDate(context, new Date());
 
     } catch (final ParseException e) {
