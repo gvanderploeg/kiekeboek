@@ -32,6 +32,7 @@ import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
@@ -116,6 +117,7 @@ public class ContactManager {
 
   private static void prepareGroups(ContentResolver resolver) {
     try {
+      // Search for one of the groups to see whether they exist already.
       Cursor c = resolver.query(
           ContactsContract.Groups.CONTENT_URI,
           new String[] { ContactsContract.Groups._ID,ContactsContract.Groups.TITLE},
@@ -149,9 +151,9 @@ public class ContactManager {
             .build());
     try {
       ContentProviderResult[] result = resolver.applyBatch(ContactsContract.AUTHORITY, ops);
-      Log.i(TAG, "Created groups, nr of results:: " + result.length);
-    } catch (Exception e) {
-      Log.e("Error", e.toString());
+      Log.i(TAG, "Created groups, nr of results: " + result.length);
+    } catch (OperationApplicationException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -174,12 +176,20 @@ public class ContactManager {
     contactOp
         .addName(user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getDisplayName())
         .addEmail(user.getEmail())
-        .addPhone(user.getCellPhone(), Phone.TYPE_MOBILE)
-        .addPhone(user.getHomePhone(), Phone.TYPE_HOME)
         .addAddress(user.getStreet(), user.getPostcode(), user.getCity())
         .addProfileAction(user.getUserId())
-        .addGroupMembership(getGroupByBirthdate(user.getBirthdate()));
-    contactOp.addPicture(user.getPhotoData());
+        .addGroupMembership(getGroupByBirthdate(user.getBirthdate()))
+        .addPicture(user.getPhotoData());
+    // Only add phone numbers for adult/teenager people; children disturb the callerid-lookup...
+    if (!isChild(user.getBirthdate())) {
+      contactOp
+          .addPhone(user.getHomePhone(), Phone.TYPE_HOME)
+          .addPhone(user.getCellPhone(), Phone.TYPE_MOBILE);
+    }
+  }
+
+  private static boolean isChild(Date birthdate) {
+    return birthdate.before(childThreshold.getTime());
   }
 
   private static long getGroupByBirthdate(Date birthdate) {
