@@ -81,7 +81,7 @@
 
     <!--<string name="intranet_export_url">http://192.168.178.37/kiekeboek/kiekeboek-export.php</string>-->
     <string name="intranet_export_url">http://www.fonteinkerkhaarlem.nl/intranet/leden/export_kiekeboek.php</string>
-
+    <string name="intranet_image_url_pattern">http://www.fonteinkerkhaarlem.nl/intranet/leden/get_foto.php?id=%d</string>
     <!-- Button that takes the user to the "sign in" screen -->
     <string
         name="sign_in_button_label">Inloggen</string>

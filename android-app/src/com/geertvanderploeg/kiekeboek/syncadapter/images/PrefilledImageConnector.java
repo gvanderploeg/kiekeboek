@@ -18,9 +18,9 @@ public class PrefilledImageConnector implements ImageConnector {
     String filename = String.format("%s/%d.jpg", imageDirectory, user.getUserId());
     try {
       InputStream asset = context.getAssets().open(filename);
-      byte[] ray = new byte[asset.available()];
-      asset.read(ray);
-      user.setPhotoData(ray);
+      byte[] array = new byte[asset.available()];
+      asset.read(array);
+      user.setPhotoData(array);
     } catch (IOException e) {
       Log.i(TAG, String.format("Cannot load photo for user %s (photo file %s): %s", user.getUserName(), filename, e));
     }

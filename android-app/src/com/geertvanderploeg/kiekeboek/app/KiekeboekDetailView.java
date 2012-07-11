@@ -68,9 +68,11 @@ public class KiekeboekDetailView extends Activity {
   private void populateDetailView(User u) {
     TextView name = (TextView) findViewById(R.id.detailNameAndPicture);
     final Bitmap photoBitmap = u.getPhotoBitmap();
-    final BitmapDrawable photo = new BitmapDrawable(photoBitmap);
-    photo.setBounds(0, 0, photoBitmap.getWidth(), photoBitmap.getHeight());
-    name.setCompoundDrawables(photo, null, null, null);
+    if (photoBitmap != null) {
+      final BitmapDrawable photo = new BitmapDrawable(photoBitmap);
+      photo.setBounds(0, 0, photoBitmap.getWidth(), photoBitmap.getHeight());
+      name.setCompoundDrawables(photo, null, null, null);
+    }
     name.setText(u.getDisplayName());
 
 

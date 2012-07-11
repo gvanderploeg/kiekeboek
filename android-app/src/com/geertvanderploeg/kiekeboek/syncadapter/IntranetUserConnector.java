@@ -12,8 +12,8 @@ import com.geertvanderploeg.kiekeboek.R;
 import com.geertvanderploeg.kiekeboek.app.Notifications;
 import com.geertvanderploeg.kiekeboek.client.NetworkUtilities;
 import com.geertvanderploeg.kiekeboek.client.User;
+import com.geertvanderploeg.kiekeboek.syncadapter.images.CombiningImageConnector;
 import com.geertvanderploeg.kiekeboek.syncadapter.images.ImageConnector;
-import com.geertvanderploeg.kiekeboek.syncadapter.images.PrefilledImageConnector;
 import com.geertvanderploeg.kiekeboek.syncadapter.intranet.IntranetSyncStatus;
 
 import org.apache.http.HttpResponse;
@@ -36,11 +36,11 @@ public class IntranetUserConnector implements UserConnector {
 
   private static final int notificationTitle = R.string.notificationtitle_intranetuserconnector;
 
-  private ImageConnector imageConnector = new PrefilledImageConnector();
+  private ImageConnector imageConnector = new CombiningImageConnector();
 
   @Override
   public List<User> fetchUpdates(Context context, Account account, String authtoken, Date lastUpdated) {
-    ArrayList<User> l = new ArrayList<User>();
+    ArrayList<User> users = new ArrayList<User>();
 
     try {
 
@@ -60,16 +60,16 @@ public class IntranetUserConnector implements UserConnector {
             Log.w(TAG, "Skipping user, cannot compose User-object from JSON string: " + jsonObject);
           } else {
             imageConnector.addPhoto(parsedUser, context);
-            l.add(parsedUser);
+            users.add(parsedUser);
           }
         }
       }
-      return l;
+      return users;
     } catch (JSONException e) {
       Log.e(TAG, "Exception occurred while parsing JSON from intranet export: " + e.getMessage(), e);
 
     }
-    return l;
+    return users;
   }
 
   @Override
@@ -97,7 +97,6 @@ public class IntranetUserConnector implements UserConnector {
     HttpConnectionParams.setSoTimeout(httpParameters, 30000);
 
     final HttpGet get = new HttpGet();
-//    get.setHeader("Cookie", authtoken);
     get.setHeader("Accept", "application/json");
 
     String uri = context.getString(R.string.intranet_export_url);
