@@ -120,8 +120,7 @@ public class KiekeboekListView extends ListActivity {
             List<User> users = userService.getUsers(context);
             pnps = new ArrayList<PersonNamePicture>();
             for (User user : users) {
-//                byte[] photoData = user.getPhotoData();
-                pnps.add(new PersonNamePicture(user.getDisplayName(), null, user.getUri(), user.getUserId()));
+                pnps.add(new PersonNamePicture(user.getDisplayName(), user.getPhotoBitmap(), user.getUri(), user.getUserId()));
             }
         }
         
