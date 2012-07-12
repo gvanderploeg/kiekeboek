@@ -48,9 +48,7 @@ import android.util.Log;
  * Class for managing contacts sync related mOperations
  */
 public class ContactManager {
-  /**
-   * Custom IM protocol used when storing status messages.
-   */
+
   private static final String TAG = "ContactManager";
 
   private static Calendar childThreshold;
@@ -120,8 +118,8 @@ public class ContactManager {
       // Search for one of the groups to see whether they exist already.
       Cursor c = resolver.query(
           ContactsContract.Groups.CONTENT_URI,
-          new String[] { ContactsContract.Groups._ID,ContactsContract.Groups.TITLE},
-          "TITLE = ?", new String[] {"Kinderen"}, null);
+          new String[]{ContactsContract.Groups._ID, ContactsContract.Groups.TITLE},
+          "TITLE = ?", new String[]{"Kinderen"}, null);
       if (c == null || !c.moveToFirst()) {
         Log.i(TAG, "Creating groups because they're not found or cursor failed: " + c);
         createGroups(resolver);
@@ -165,27 +163,27 @@ public class ContactManager {
    * @param accountName the account the contact belongs to
    * @param user        the sample SyncAdapter User object
    */
-  private static void addContact(Context context, String accountName,
-                                 User user, BatchOperation batchOperation) {
-    // Put the data in the contacts provider
-    final ContactOperations contactOp =
-        ContactOperations.createNewContact(context, user.getUserId(),
-            accountName, batchOperation);
+  private static void addContact(Context context, String accountName, User user, BatchOperation batchOperation) {
 
-    long groupToAddTo = getGroupByBirthdate(user.getBirthdate());
-    contactOp
+    /*
+     * Do not add children to the address book as they probably will not be called anyway and will not call
+     * themselves.
+     */
+    if (isChild(user.getBirthdate())) {
+      return;
+    }
+
+    // Put the data in the contacts provider
+    ContactOperations
+        .createNewContact(context, user.getUserId(), accountName, batchOperation)
         .addName(user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getDisplayName())
         .addEmail(user.getEmail())
         .addAddress(user.getStreet(), user.getPostcode(), user.getCity())
         .addProfileAction(user.getUserId())
         .addGroupMembership(getGroupByBirthdate(user.getBirthdate()))
-        .addPicture(user.getPhotoData());
-    // Only add phone numbers for adult/teenager people; children disturb the callerid-lookup...
-    if (!isChild(user.getBirthdate())) {
-      contactOp
-          .addPhone(user.getHomePhone(), Phone.TYPE_HOME)
-          .addPhone(user.getCellPhone(), Phone.TYPE_MOBILE);
-    }
+        .addPicture(user.getPhotoData())
+        .addPhone(user.getHomePhone(), Phone.TYPE_HOME)
+        .addPhone(user.getCellPhone(), Phone.TYPE_MOBILE);
   }
 
   private static boolean isChild(Date birthdate) {
@@ -205,6 +203,7 @@ public class ContactManager {
 
   /**
    * Populate the static fields with the current groupids.
+   *
    * @param resolver the CR
    */
   private static void queryGroupIds(ContentResolver resolver) {
@@ -235,6 +234,7 @@ public class ContactManager {
     Log.i(TAG, String.format("Result of queryGroupIds: children id: %d, teenagers id:%d, adults id: %d",
         childGroupId, teenagerGroupId, adultGroupId));
   }
+
   /**
    * Updates a single contact to the platform contacts provider.
    *
@@ -253,13 +253,9 @@ public class ContactManager {
     String homePhone = null;
     String email = null;
 
-    final Cursor c =
-        resolver.query(Data.CONTENT_URI, DataQuery.PROJECTION,
-            DataQuery.SELECTION,
-            new String[]{String.valueOf(rawContactId)}, null);
-    final ContactOperations contactOp =
-        ContactOperations.updateExistingContact(context, rawContactId,
-            batchOperation);
+    final Cursor c = resolver.query(Data.CONTENT_URI, DataQuery.PROJECTION,
+            DataQuery.SELECTION, new String[]{String.valueOf(rawContactId)}, null);
+    final ContactOperations contactOp = ContactOperations.updateExistingContact(context, rawContactId, batchOperation);
 
     try {
       while (c.moveToNext()) {
@@ -268,28 +264,21 @@ public class ContactManager {
         uri = ContentUris.withAppendedId(Data.CONTENT_URI, id);
 
         if (mimeType.equals(StructuredName.CONTENT_ITEM_TYPE)) {
-          final String lastName =
-              c.getString(DataQuery.COLUMN_FAMILY_NAME);
-          final String firstName =
-              c.getString(DataQuery.COLUMN_GIVEN_NAME);
-          contactOp.updateName(uri, firstName, lastName, user
-              .getFirstName(), user.getLastName());
+          final String lastName = c.getString(DataQuery.COLUMN_FAMILY_NAME);
+          final String firstName = c.getString(DataQuery.COLUMN_GIVEN_NAME);
+          contactOp.updateName(uri, firstName, lastName, user.getFirstName(), user.getLastName());
         } else if (mimeType.equals(Phone.CONTENT_ITEM_TYPE)) {
           final int type = c.getInt(DataQuery.COLUMN_PHONE_TYPE);
-
           if (type == Phone.TYPE_MOBILE) {
             cellPhone = c.getString(DataQuery.COLUMN_PHONE_NUMBER);
-            contactOp.updatePhone(cellPhone, user.getCellPhone(),
-                uri);
+            contactOp.updatePhone(cellPhone, user.getCellPhone(), uri);
           } else if (type == Phone.TYPE_HOME) {
             homePhone = c.getString(DataQuery.COLUMN_PHONE_NUMBER);
-            contactOp.updatePhone(homePhone, user.getHomePhone(),
-                uri);
+            contactOp.updatePhone(homePhone, user.getHomePhone(), uri);
           }
         } else if (Data.MIMETYPE.equals(Email.CONTENT_ITEM_TYPE)) {
           email = c.getString(DataQuery.COLUMN_EMAIL_ADDRESS);
           contactOp.updateEmail(user.getEmail(), email, uri);
-
         }
       } // while
     } finally {
@@ -320,11 +309,9 @@ public class ContactManager {
    * @param rawContactId the unique Id for this rawContact in contacts
    *                     provider
    */
-  private static void deleteContact(Context context, long rawContactId,
-                                    BatchOperation batchOperation) {
+  private static void deleteContact(Context context, long rawContactId, BatchOperation batchOperation) {
     batchOperation.add(ContactOperations.newDeleteCpo(
-        ContentUris.withAppendedId(RawContacts.CONTENT_URI, rawContactId),
-        true).build());
+        ContentUris.withAppendedId(RawContacts.CONTENT_URI, rawContactId), true).build());
   }
 
   /**
@@ -337,10 +324,8 @@ public class ContactManager {
    */
   private static long lookupRawContact(ContentResolver resolver, long userId) {
     long authorId = 0;
-    final Cursor c =
-        resolver.query(RawContacts.CONTENT_URI, UserIdQuery.PROJECTION,
-            UserIdQuery.SELECTION, new String[]{String.valueOf(userId)},
-            null);
+    final Cursor c = resolver.query(RawContacts.CONTENT_URI, UserIdQuery.PROJECTION,
+            UserIdQuery.SELECTION, new String[]{String.valueOf(userId)}, null);
     try {
       if (c.moveToFirst()) {
         authorId = c.getLong(UserIdQuery.COLUMN_ID);
