@@ -187,7 +187,7 @@ public class ContactManager {
   }
 
   private static boolean isChild(Date birthdate) {
-    return birthdate.before(childThreshold.getTime());
+    return birthdate.after(childThreshold.getTime());
   }
 
   private static long getGroupByBirthdate(Date birthdate) {
