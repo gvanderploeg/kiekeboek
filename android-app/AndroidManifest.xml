@@ -91,7 +91,7 @@
     </activity>
     <activity
 
-        android:name=".app.KiekeboekListView"
+        android:name=".app.HomeView"
         android:label="@string/label"
         android:icon="@drawable/fonteinkerkicon">
       <intent-filter>
@@ -101,7 +101,12 @@
     </activity>
 
     <activity
+        android:name=".app.KiekeboekListView"
+        android:label="@string/label"
+        android:icon="@drawable/fonteinkerkicon">
+    </activity>
 
+    <activity
         android:name=".app.KiekeboekAboutView"
         android:label="@string/label"
         android:icon="@drawable/fonteinkerkicon">
