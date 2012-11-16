@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -15,16 +16,12 @@ import com.geertvanderploeg.kiekeboek.client.User;
 import com.geertvanderploeg.kiekeboek.syncadapter.images.CombiningImageConnector;
 import com.geertvanderploeg.kiekeboek.syncadapter.images.ImageConnector;
 import com.geertvanderploeg.kiekeboek.syncadapter.intranet.IntranetSyncStatus;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.accounts.Account;
 import android.content.Context;
@@ -38,36 +35,24 @@ public class IntranetUserConnector implements UserConnector {
 
   private ImageConnector imageConnector = new CombiningImageConnector();
 
+  private JSONPersonExtractor extractor = new JSONPersonExtractor();
+
   @Override
   public List<User> fetchUpdates(Context context, Account account, String authtoken, Date lastUpdated) {
-    ArrayList<User> users = new ArrayList<User>();
+    List<User> users = new ArrayList<User>();
 
-    try {
-
-      final String jsonString = getJSONStringFromIntranet(account, authtoken, context, lastUpdated);
-      if (jsonString == null) {
-//        Notifications.addNotification(context,  context.getString(notificationTitle), "downloaded JSON data is null");
+    final String jsonString = getJSONStringFromIntranet(account, authtoken, context, lastUpdated);
+    if (jsonString == null) {
+      Notifications.addNotification(context,  context.getString(notificationTitle), "downloaded JSON data is null");
+    } else {
+      users = extractor.extract(jsonString);
+      if (users == null) {
+        Notifications.addNotification(context,  context.getString(notificationTitle), "Could not parse person data.");
       } else {
-        JSONObject export = new JSONObject(jsonString);
-        JSONArray persons = export.getJSONArray("data");
-        Log.d(TAG, String.format("JSON data is: version: %s, since: %s, nr of items: %d", export.get("version"),
-            export.get("since"), persons.length()));
-
-        for (int i = 0; i < persons.length(); i++) {
-          JSONObject jsonObject = persons.getJSONObject(i);
-          User parsedUser = User.valueOf(jsonObject);
-          if (parsedUser == null) {
-            Log.w(TAG, "Skipping user, cannot compose User-object from JSON string: " + jsonObject);
-          } else {
-            imageConnector.addPhoto(parsedUser, context);
-            users.add(parsedUser);
-          }
+        for (User user : users) {
+          imageConnector.addPhoto(user, context);
         }
       }
-      return users;
-    } catch (JSONException e) {
-      Log.e(TAG, "Exception occurred while parsing JSON from intranet export: " + e.getMessage(), e);
-
     }
     return users;
   }
@@ -107,6 +92,7 @@ public class IntranetUserConnector implements UserConnector {
     }
     Log.d(TAG, "About to get JSON string from intranet. URI: " + uri);
     get.setURI(URI.create(uri));
+    Log.w(TAG, "Request headers: " + Arrays.asList(get.getAllHeaders()));
     try {
       Log.d(TAG, "Before execute GET...");
       final HttpResponse response = localHttpClient.execute(get);
@@ -120,6 +106,7 @@ public class IntranetUserConnector implements UserConnector {
         return body;
       } else {
         Log.w(TAG, "Response is not a 200: " + response.getStatusLine().toString());
+        Log.w(TAG, "Response headers: " + Arrays.asList(response.getAllHeaders()));
         Notifications.addNotification(context, "Error while downloading intranet-export", "Response is not a 200: " + response.getStatusLine().toString());
         return null;
       }

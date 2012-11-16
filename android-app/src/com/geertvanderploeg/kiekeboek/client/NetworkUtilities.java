@@ -22,6 +22,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.geertvanderploeg.kiekeboek.R;
+import com.geertvanderploeg.kiekeboek.authenticator.AuthenticatorActivity;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -43,16 +45,13 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.geertvanderploeg.kiekeboek.R;
-import com.geertvanderploeg.kiekeboek.authenticator.AuthenticatorActivity;
-
 /**
  * Provides utility methods for communicating with the server.
  */
 public class NetworkUtilities {
     private static final String TAG = "NetworkUtilities";
-    public static final String PARAM_USERNAME = "entered_login";
-    public static final String PARAM_PASSWORD = "entered_password";
+    public static final String PARAM_USERNAME = "data[Person][username]";
+    public static final String PARAM_PASSWORD = "data[Person][password]";
     public static final String PARAM_UPDATED = "timestamp";
     public static final String USER_AGENT = "AuthenticationService/1.0";
     public static final int REGISTRATION_TIMEOUT = 30 * 1000; // ms
@@ -127,6 +126,7 @@ public class NetworkUtilities {
         final HttpResponse resp;
 
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("_method", "POST"));
         params.add(new BasicNameValuePair(PARAM_USERNAME, username));
         params.add(new BasicNameValuePair(PARAM_PASSWORD, password));
         HttpEntity entity = null;
@@ -147,7 +147,7 @@ public class NetworkUtilities {
             Log.d(TAG, "Authentication response headers: " + Arrays.asList(resp.getAllHeaders()));
             if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY
                             && resp.getHeaders("Location") != null
-                            && resp.getHeaders("Location")[0].getValue().equals("/intranet/index.php")) {
+                            && resp.getHeaders("Location")[0].getValue().contains("/intranet/people/home")) {
                 Log.v(TAG, "Successful authentication");
                 sendResult(true, handler, context);
                 resp.getEntity().consumeContent();
