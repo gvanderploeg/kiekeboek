@@ -147,7 +147,7 @@ public class NetworkUtilities {
             Log.d(TAG, "Authentication response headers: " + Arrays.asList(resp.getAllHeaders()));
             if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY
                             && resp.getHeaders("Location") != null
-                            && resp.getHeaders("Location")[0].getValue().contains("/intranet/people/home")) {
+                            && resp.getHeaders("Location")[0].getValue().contains("/intranet/people")) {
                 Log.v(TAG, "Successful authentication");
                 sendResult(true, handler, context);
                 resp.getEntity().consumeContent();
